@@ -33,25 +33,34 @@ router.post('/', async (req, res) => {
 		name: req.body.name
 	});
 
-	genre = await genre.save();
-	res.send(genre);
+	try{
+		genre = await genre.save();
+		res.send(genre);
+	}
+	catch(err){console.warn(err.message)};
 });
 
 //READ
 router.get('/', async (req, res) => {
-	const genres = await Genre.find().sort('name');
-	res.send(genres);	
-});
+	try{
+		const genres = await Genre.find().sort('name');
+		res.send(genres);	
+	}
+	catch(err){console.warn(err.message)};
+	});
 
 router.get('/:id', async (req, res) => {
-	//check if data exists, if no status = 404
-	const genre = await Genre.findById(req.params.id);
-
-	if (!genre) {
-		return res.status(400).send('The genre does not exist! Try another one...');
+	try{
+		//check if data exists, if no status = 404
+		const genre = await Genre.findById(req.params.id);
+	
+		if (!genre) {
+			return res.status(400).send('The genre does not exist! Try another one...');
+		}
+		//send data
+		return res.send(genre);
 	}
-	//send data
-	return res.send(genre);
+	catch(err){console.warn(err.message)};
 });
 
 //UPDATE
@@ -63,25 +72,31 @@ router.put('/:id', async (req, res) => {
 		return res.status(400).send(error.details[0].message);
 	}
 
-	const genre = await Genre.findByIdAndUpdate(req.params.id, {name: req.body.name}, {
-		new: true
-	});
-	//check if data exists, if no, status = 404
-	if (!genre) {
-		return res.status(400).send('The genre does not exist! Try another one...');
+	try{
+		const genre = await Genre.findByIdAndUpdate(req.params.id, {name: req.body.name}, {
+			new: true
+		});
+		//check if data exists, if no, status = 404
+		if (!genre) {
+			return res.status(404).send('The genre does not exist! Try another one...');
+		}
+	
+		//Update data
+		res.send(genre);
 	}
-
-	//Update data
-	res.send(genre);
+	catch(err){console.warn(err.message)};
 });
 
 //DELETE
 router.delete('/:id', async (req, res) => {
-	const genre = await Genre.findByIdAndRemove(req.params.id);
-	//check if data exists, if no, status = 404
-	if (!genre) {
-		return res.status(400).send('The genre does not exist! Try another one...');
+	try{
+		const genre = await Genre.findByIdAndRemove(req.params.id);
+		//check if data exists, if no, status = 404
+		if (!genre) {
+			return res.status(400).send('The genre does not exist! Try another one...');
+		}
+		res.send(genre);
 	}
-	res.send(genre);
+	catch(err){console.warn(err.message)};
 });
 module.exports = router;
