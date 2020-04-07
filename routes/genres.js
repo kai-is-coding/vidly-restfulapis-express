@@ -2,26 +2,7 @@ const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 const express = require('express');
 const router = express.Router();
-const Joi = require('@hapi/joi');
-
-
-const Genre = mongoose.model('Genre', new mongoose.Schema({
-	name: {
-		type: String,
-		required: true,
-		minlength: 5,
-		maxlength: 50
-	}
-}));
-
-// check data if valid function
-function validateData(genres) {
-	const schema = Joi.object({
-		name: Joi.string().alphanum().min(3).max(10).required()
-	});
-	return schema.validate(genres);
-};
-
+const {Genre, validateData} = require('../models/genre');
 //CREATE
 router.post('/', async (req, res) => {
 	//validate data, if error status = 400

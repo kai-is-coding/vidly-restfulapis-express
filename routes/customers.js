@@ -3,40 +3,13 @@ mongoose.set('useFindAndModify', false);
 
 const express = require('express');
 const router = express.Router();
-const Joi = require('@hapi/joi');
 
-const Customer = mongoose.model('Customer', new mongoose.Schema({
-	name: {
-		type: String,
-		required: true,
-		minlength: 3,
-		maxlength: 10
-	},
-	phone: {
-		type: Number,
-		required: true,
-		length: 6
-	},
-	isGold: {
-		type: Boolean,
-		default: false
-	}
-}));
-
-// validate input data
-function validateDate(customers){
-	const schema = Joi.object({
-		name: Joi.string().min(3).max(10).required(),
-		phone: Joi.number().required(),
-		isGold: Joi.boolean()
-	});
-	return schema.validate(customers);
-}
+const {Customer, validateData} = require('../models/customer');
 
 // CREATE
 router.post('/', async (req, res) => {
 	// validate input data
-	const {error} = validateDate(req.body);
+	const {error} = validateData(req.body);
 	if (error) {
 		res.status(400).send(error.details[0].message);
 	}
@@ -75,7 +48,7 @@ router.get('/:id', async (req, res) => {
 // UPDATE
 router.put('/:id', async (req, res) => {
 	// validate input data
-	const {error} = validateDate(req.body);
+	const {error} = validateData(req.body);
 	if (error) {
 		return res.status(400).send(error.details[0].message);
 	}
