@@ -3,18 +3,19 @@ mongoose.set('useFindAndModify', false);
 const express = require('express');
 const router = express.Router();
 const {Genre, validateData} = require('../models/genre');
+
 //CREATE
 router.post('/', async (req, res) => {
-	//validate data, if error status = 400
-	const {error} = validateData(req.body);
-	if (error) {
-		return res.status(400).send(error.details[0].message);
-	}
-	let genre = new Genre({
-		name: req.body.name
-	});
-
 	try{
+		//validate data, if error status = 400
+		const {error} = validateData(req.body);
+		if (error) {
+			return res.status(400).send(error.details[0].message);
+		}
+		let genre = new Genre({
+			name: req.body.name
+		});
+
 		genre = await genre.save();
 		res.send(genre);
 	}
@@ -46,14 +47,14 @@ router.get('/:id', async (req, res) => {
 
 //UPDATE
 router.put('/:id', async (req, res) => {
-
-	//validate data
-	const {error} = validateData(req.body);
-	if (error) {
-		return res.status(400).send(error.details[0].message);
-	}
-
 	try{
+
+		//validate data
+		const {error} = validateData(req.body);
+		if (error) {
+			return res.status(400).send(error.details[0].message);
+		}
+
 		const genre = await Genre.findByIdAndUpdate(req.params.id, {name: req.body.name}, {
 			new: true
 		});

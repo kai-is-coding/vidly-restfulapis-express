@@ -8,17 +8,20 @@ const {Customer, validateData} = require('../models/customer');
 
 // CREATE
 router.post('/', async (req, res) => {
-	// validate input data
-	const {error} = validateData(req.body);
-	if (error) {
-		res.status(400).send(error.details[0].message);
-	}
-	let customer = new Customer({
-		name: req.body.name,
-		phone: req.body.phone,
-		isGold: req.body.isGold
-	})
 	try{
+		// validate input data
+		const {error} = validateData(req.body);
+
+		if (error) {
+			res.status(400).send(error.details[0].message);
+		}
+
+		let customer = new Customer({
+			name: req.body.name,
+			phone: req.body.phone,
+			isGold: req.body.isGold
+		})
+
 		customer = await customer.save();
 		res.send(customer);
 	}
@@ -47,13 +50,13 @@ router.get('/:id', async (req, res) => {
 
 // UPDATE
 router.put('/:id', async (req, res) => {
-	// validate input data
-	const {error} = validateData(req.body);
-	if (error) {
-		return res.status(400).send(error.details[0].message);
-	}
-
 	try{
+		// validate input data
+		const {error} = validateData(req.body);
+		if (error) {
+			return res.status(400).send(error.details[0].message);
+		}
+
 		const customer = await Customer.findByIdAndUpdate(req.params.id, {
 			name: req.body.name,
 			phone: req.body.phone,
