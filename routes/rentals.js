@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 const express = require('express');
 const router = express.Router();
+const Fawn = require('fawn');
 const {Rental, validateData} = require('../models/rental');
 const {Customer} = require('../models/customer');
 const {Movie} = require('../models/movie');
+
+Fawn.init(mongoose);
 
 // CREATE
 router.post('/', async (req,res) => {
@@ -24,7 +27,8 @@ router.post('/', async (req,res) => {
 		if (movie.numberInStock === 0) {
 			return res.status(400).send('This movie is out of stock!');	
 		}
-		let rental = new Rental({
+
+		const rental = new Rental({
 			customer: {
 				_id: customer._id,
 				name: customer.name,
@@ -36,12 +40,23 @@ router.post('/', async (req,res) => {
 				dailyRentalRate: movie.dailyRentalRate
 			}
 		});
-		rental = await rental.save();
 
-		movie.numberInStock -= 1;
-		movie.save();
-
-		res.send(rental);
+		// two pharse commit to run multiple methods in one unit
+		try{
+			new Fawn.Task()
+			.save('rentals', rental)
+			.update('movies', {_id: movie._id}, {
+				$inc: {numberInStock: -1}
+			})
+			.run();
+			// rental = await rental.save();
+	
+			// movie.numberInStock -= 1;
+			// movie.save();
+	
+			res.send(rental);
+		}
+		catch(err){res.status(500).send('Something wrong...');}
 	}
 	catch(err){console.warn(err.message);}
 });
