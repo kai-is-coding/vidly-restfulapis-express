@@ -1,3 +1,5 @@
+const auth = require('../middleware/auth');
+
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 const express = require('express');
@@ -6,7 +8,7 @@ const {Movie, validateData} = require('../models/movie');
 const {Genre} = require('../models/genre');
 
 // CREATE
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	try{
 		const {error} = validateData(req.body);
 		if (error) {
@@ -54,7 +56,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
 	try{
 		const {error} = validateData(req.body);
 		if (error) {
@@ -86,7 +88,7 @@ router.put('/:id', async (req, res) => {
 })
 
 // DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
 	try{
 		const movie = await Movie.findByIdAndRemove(req.params.id);
 

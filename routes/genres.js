@@ -1,3 +1,5 @@
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 const express = require('express');
@@ -5,8 +7,9 @@ const router = express.Router();
 const {Genre, validateData} = require('../models/genre');
 
 //CREATE
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	try{
+
 		//validate data, if error status = 400
 		const {error} = validateData(req.body);
 		if (error) {
@@ -70,7 +73,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
 	try{
 		const genre = await Genre.findByIdAndRemove(req.params.id);
 		//check if data exists, if no, status = 404

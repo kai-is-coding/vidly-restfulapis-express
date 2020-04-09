@@ -1,3 +1,4 @@
+const auth = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const _ = require('lodash');
@@ -37,6 +38,15 @@ router.post('/', async (req, res) => {
 	}
 catch(err){console.warn(err.message);}
 
+});
+
+// READ
+router.get('/me', auth, async (req, res) => {
+	try{
+		const user = await User.findById(req.user._id).select('-password');
+		res.send(user);
+	}
+	catch(err){console.warn(err.message);}
 });
 
 module.exports = router;

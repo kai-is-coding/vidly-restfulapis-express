@@ -1,3 +1,5 @@
+const auth = require('../middleware/auth');
+
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 
@@ -7,7 +9,7 @@ const router = express.Router();
 const {Customer, validateData} = require('../models/customer');
 
 // CREATE
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	try{
 		// validate input data
 		const {error} = validateData(req.body);
@@ -49,7 +51,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
 	try{
 		// validate input data
 		const {error} = validateData(req.body);
@@ -73,7 +75,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELTE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
 
 	try{
 		const customer = await Customer.findOneAndRemove(req.params.id);
