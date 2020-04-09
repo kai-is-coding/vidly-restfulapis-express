@@ -1,3 +1,5 @@
+const config = require('config');
+const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const Joi = require('@hapi/joi');
@@ -29,7 +31,8 @@ router.post('/', async (req, res) => {
 			return res.status(400).send('Invalid email or password...');
 		}
 
-		res.send(true);
+		const token = user.generateAuthToken();
+		res.send(token);
 	}
 catch(err){console.warn(err.message);}
 
