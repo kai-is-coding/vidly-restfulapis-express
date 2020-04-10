@@ -9,7 +9,7 @@ const {Genre} = require('../models/genre');
 
 // CREATE
 router.post('/', auth, async (req, res) => {
-	try{
+	// try{
 		const {error} = validateData(req.body);
 		if (error) {
 			return res.status(400).send(error.details[0].message);
@@ -31,33 +31,33 @@ router.post('/', auth, async (req, res) => {
 
 		await movie.save();
 		res.send(movie);
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 // READ
 router.get('/', async (req, res) => {
-	try{
+	// try{
 		const movies = await Movie.find().sort('title');
 		res.send(movies);
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 router.get('/:id', async (req, res) => {
-	try{
+	// try{
 		const movie = Movie.findById(req.params.id);
 		if (!movie) {
 			return res.status(404).send('Could not find this movie. Please try again!');
 		}
 		res.send(movie);
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 // UPDATE
 router.put('/:id', auth, async (req, res) => {
-	try{
+	// try{
 		const {error} = validateData(req.body);
 		if (error) {
 			return res.status(400).send(error.details[0].message);
@@ -83,13 +83,13 @@ router.put('/:id', auth, async (req, res) => {
 		}
 
 		res.send(movie);
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 })
 
 // DELETE
 router.delete('/:id', auth, async (req, res) => {
-	try{
+	// try{
 		const movie = await Movie.findByIdAndRemove(req.params.id);
 
 		if (!movie) {
@@ -97,8 +97,8 @@ router.delete('/:id', auth, async (req, res) => {
 		}
 
 		res.send(movies);
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 module.exports = router;

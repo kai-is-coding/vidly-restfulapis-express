@@ -13,7 +13,7 @@ Fawn.init(mongoose);
 
 // CREATE
 router.post('/', auth, async (req,res) => {
-	try{
+	// try{
 		const {error} = validateData(req.body);
 		if (error) {
 			return res.status(400).send(error.details[0].message);
@@ -59,33 +59,33 @@ router.post('/', auth, async (req,res) => {
 			res.send(rental);
 		}
 		catch(err){res.status(500).send('Something wrong...');}
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 // READ
 router.get('/', async (req,res) => {
-	try{
+	// try{
 		const rentals = await Rental.find().sort('-dateOut');
 		res.send(rentals);
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 router.get('/:id', async (req,res) => {
-	try{
+	// try{
 		const rental = await Rental.findById(req.params.id);
 		if (!rental) {
 			return res.status(404).send('Could not find this rental. Please try again!');
 		}
 		res.send(rental);
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 // UPDATE
 router.put('/:id', auth, async (req,res) => {
-	try{
+	// try{
 		const {error} = validateData(req.body);
 		if (error) {
 			return res.status(400).send(error.details[0].message);
@@ -109,16 +109,17 @@ router.put('/:id', auth, async (req,res) => {
 				dailyRentalRate: movie.dailyRentalRate
 			}
 		});
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 // DELETE
 router.delete('/:id', auth, async (req,res) => {
-	try{
-
-	}
-	catch(err){console.warn(err.message);}
+	// try{
+		const retal = await Rental.findByIdAndRemove(req.body.id);
+		res.send(retal);
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 module.exports = router;

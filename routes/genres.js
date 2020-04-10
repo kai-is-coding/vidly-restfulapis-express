@@ -1,3 +1,4 @@
+const asyncMiddleware = require('../middleware/async');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const mongoose = require('mongoose');
@@ -7,9 +8,7 @@ const router = express.Router();
 const {Genre, validateData} = require('../models/genre');
 
 //CREATE
-router.post('/', auth, async (req, res) => {
-	try{
-
+router.post('/', auth, async (req, res, next) => {
 		//validate data, if error status = 400
 		const {error} = validateData(req.body);
 		if (error) {
@@ -18,24 +17,24 @@ router.post('/', auth, async (req, res) => {
 		const genre = new Genre({
 			name: req.body.name
 		});
-
 		await genre.save();
 		res.send(genre);
-	}
-	catch(err){console.warn(err.message)};
 });
 
 //READ
 router.get('/', async (req, res) => {
-	try{
+
+	throw new Error('Could not get the genres.');
+
+	// try{
 		const genres = await Genre.find().sort('name');
 		res.send(genres);	
-	}
-	catch(err){console.warn(err.message)};
+	// }
+	// catch(err){console.warn(err.message)};
 	});
 
 router.get('/:id', async (req, res) => {
-	try{
+	// try{
 		//check if data exists, if no status = 404
 		const genre = await Genre.findById(req.params.id);
 	
@@ -44,13 +43,13 @@ router.get('/:id', async (req, res) => {
 		}
 		//send data
 		return res.send(genre);
-	}
-	catch(err){console.warn(err.message)};
+	// }
+	// catch(err){console.warn(err.message)};
 });
 
 //UPDATE
 router.put('/:id', async (req, res) => {
-	try{
+	// try{
 
 		//validate data
 		const {error} = validateData(req.body);
@@ -68,20 +67,20 @@ router.put('/:id', async (req, res) => {
 	
 		//Update data
 		res.send(genre);
-	}
-	catch(err){console.warn(err.message)};
+	// }
+	// catch(err){console.warn(err.message)};
 });
 
 //DELETE
 router.delete('/:id', [auth, admin], async (req, res) => {
-	try{
+	// try{
 		const genre = await Genre.findByIdAndRemove(req.params.id);
 		//check if data exists, if no, status = 404
 		if (!genre) {
 			return res.status(400).send('The genre does not exist! Try another one...');
 		}
 		res.send(genre);
-	}
-	catch(err){console.warn(err.message)};
+	// }
+	// catch(err){console.warn(err.message)};
 });
 module.exports = router;

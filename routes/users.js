@@ -12,7 +12,7 @@ const {User, validateData} = require('../models/user');
 
 // Create
 router.post('/', async (req, res) => {
-	try{
+	// try{
 		// validate input data
 		const {error} = validateData(req.body);
 		if (error) {
@@ -35,18 +35,17 @@ router.post('/', async (req, res) => {
 
 		const token = user.generateAuthToken();
 		res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
-	}
-catch(err){console.warn(err.message);}
-
+	// }
+// catch(err){console.warn(err.message);}
 });
 
 // READ
 router.get('/me', auth, async (req, res) => {
-	try{
+	// try{
 		const user = await User.findById(req.user._id).select('-password');
 		res.send(user);
-	}
-	catch(err){console.warn(err.message);}
+	// }
+	// catch(err){console.warn(err.message);}
 });
 
 module.exports = router;
