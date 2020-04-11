@@ -24,7 +24,7 @@ router.post('/', auth, async (req, res, next) => {
 //READ
 router.get('/', async (req, res) => {
 
-	throw new Error('Could not get the genres.');
+	// throw new Error('Could not get the genres.');
 
 	// try{
 		const genres = await Genre.find().sort('name');

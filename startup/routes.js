@@ -1,5 +1,6 @@
 const express = require('express');
 const error = require('../middleware/error');
+require('express-async-errors');
 
 const genres = require('../routes/genres');
 const customers = require('../routes/customers');
