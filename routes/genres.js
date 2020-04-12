@@ -1,6 +1,7 @@
 const asyncMiddleware = require('../middleware/async');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 const express = require('express');
@@ -33,7 +34,7 @@ router.get('/', async (req, res) => {
 	// catch(err){console.warn(err.message)};
 	});
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateObjectId, async (req, res) => {
 	// try{
 		//check if data exists, if no status = 404
 		const genre = await Genre.findById(req.params.id);
