@@ -1,4 +1,5 @@
 const auth = require('../middleware/auth');
+const validate = require('../middleware/validateData');
 
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
@@ -8,12 +9,8 @@ const {Movie, validateData} = require('../models/movie');
 const {Genre} = require('../models/genre');
 
 // CREATE
-router.post('/', auth, async (req, res) => {
+router.post('/', [auth, validate(validateData)], async (req, res) => {
 	// try{
-		const {error} = validateData(req.body);
-		if (error) {
-			return res.status(400).send(error.details[0].message);
-		}
 		const genre = await Genre.findById(req.body.genreId);
 		if (!genre) {
 			return res.status(400).send('Invalid Genre!');
@@ -56,12 +53,8 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', [auth, validate(validateData)], async (req, res) => {
 	// try{
-		const {error} = validateData(req.body);
-		if (error) {
-			return res.status(400).send(error.details[0].message);
-		}
 
 		const genre = await Genre.findById(req.body.genreId);
 		if (!genre) {

@@ -23,7 +23,8 @@ const Movie = mongoose.model('Movie', new mongoose.Schema({
 		type: Number,
 		required: true,
 		min: 0,
-		max: 255
+		max: 255,
+		default: 2
 	}
 }));
 

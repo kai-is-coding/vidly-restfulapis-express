@@ -9,15 +9,11 @@ mongoose.set('useCreateIndex', true);
 const express = require('express');
 const router = express.Router();
 const {User} = require('../models/user');
+const validate = require('../middleware/validateData');
 
-router.post('/', async (req, res) => {
-	try{
-		// validate input data
-		const {error} = validateUser(req.body);
-		if (error) {
-			return res.status(400).send(error.details[0].message);
-		}
 
+router.post('/', validate(validateUser), async (req, res) => {
+	// try{
 		// check if the user alreay exists
 		let user = await User.findOne({email: req.body.email});
 		
@@ -35,9 +31,8 @@ router.post('/', async (req, res) => {
 		res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
 
 		// res.send(token);
-	}
-catch(err){console.warn(err.message);}
-
+// 	}
+// catch(err){console.warn(err.message);}
 });
 
 function validateUser(req){

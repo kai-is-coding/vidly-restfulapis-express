@@ -1,4 +1,5 @@
 const auth = require('../middleware/auth');
+const validate = require('../middleware/validateData');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const _ = require('lodash');
@@ -11,13 +12,8 @@ const router = express.Router();
 const {User, validateData} = require('../models/user');
 
 // Create
-router.post('/', async (req, res) => {
+router.post('/', validate(validateData), async (req, res) => {
 	// try{
-		// validate input data
-		const {error} = validateData(req.body);
-		if (error) {
-			return res.status(400).send(error.details[0].message);
-		}
 
 		// check if the user alreay exists
 		let user = await User.findOne({email: req.body.email});

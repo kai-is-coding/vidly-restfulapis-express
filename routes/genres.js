@@ -1,6 +1,8 @@
 const asyncMiddleware = require('../middleware/async');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const validate = require('../middleware/validateData');
+
 const validateObjectId = require('../middleware/validateObjectId');
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
@@ -9,12 +11,7 @@ const router = express.Router();
 const {Genre, validateData} = require('../models/genre');
 
 //CREATE
-router.post('/', auth, async (req, res, next) => {
-		//validate data, if error status = 400
-		const {error} = validateData(req.body);
-		if (error) {
-			return res.status(400).send(error.details[0].message);
-		}
+router.post('/', [auth, validate(validateData)], async (req, res, next) => {
 		const genre = new Genre({
 			name: req.body.name
 		});
@@ -50,14 +47,8 @@ router.get('/:id', validateObjectId, async (req, res) => {
 });
 
 //UPDATE
-router.put('/:id', [auth, validateObjectId], async (req, res) => {
+router.put('/:id', [auth, validateObjectId, validate(validateData)], async (req, res) => {
 	// try{
-
-		//validate data
-		const {error} = validateData(req.body);
-		if (error) {
-			return res.status(400).send(error.details[0].message);
-		}
 
 		const genre = await Genre.findByIdAndUpdate(req.params.id, {name: req.body.name}, {
 			new: true

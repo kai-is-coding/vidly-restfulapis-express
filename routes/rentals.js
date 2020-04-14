@@ -1,4 +1,5 @@
 const auth = require('../middleware/auth');
+const validate = require('../middleware/validateData');
 
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
@@ -12,12 +13,8 @@ const {Movie} = require('../models/movie');
 Fawn.init(mongoose);
 
 // CREATE
-router.post('/', auth, async (req,res) => {
+router.post('/', [auth, validate(validateData)], async (req,res) => {
 	// try{
-		const {error} = validateData(req.body);
-		if (error) {
-			return res.status(400).send(error.details[0].message);
-		}
 		// check if customer and movie exists
 		const customer = await Customer.findById(req.body.customerId);
 		const movie = await Movie.findById(req.body.movieId);
@@ -84,12 +81,8 @@ router.get('/:id', async (req,res) => {
 });
 
 // UPDATE
-router.put('/:id', auth, async (req,res) => {
+router.put('/:id', [auth, validate(validateData)], async (req,res) => {
 	// try{
-		const {error} = validateData(req.body);
-		if (error) {
-			return res.status(400).send(error.details[0].message);
-		}
 		// check if customer and movie exists
 		const customer = await Customer.findById(req.body.customerId);
 		const movie = await Movie.findById(req.body.movieId);
